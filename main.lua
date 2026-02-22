@@ -1,6 +1,8 @@
 return {
 	entry = function()
-		local fd_output, _ = Command("fd"):arg({ "--type", "d", "--absolute-path" }):stdout(Command.PIPED):output()
+		local pwd_output, _ = Command("pwd"):stdout(Command.PIPED):output()
+		local cwd = pwd_output.stdout:gsub("\n$", "")
+		local fd_output, _ = Command("fd"):arg({ "--type", "d" }):stdout(Command.PIPED):output()
 		if not fd_output or fd_output.stdout == "" then
 			ya.notify { title = "fd-fzf.yazi", content = "No directories found", level = "warn", timeout = 3 }
 			return
@@ -34,7 +36,7 @@ return {
 
 		local selected = output.stdout:gsub("\n$", "")
 		if selected ~= "" then
-			ya.emit("cd", { selected, raw = true })
+			ya.emit("cd", { cwd .. "/" .. selected, raw = true })
 		end
 	end,
 }
