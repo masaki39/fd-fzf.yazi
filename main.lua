@@ -2,11 +2,13 @@ return {
 	entry = function()
 		local pwd_output, _ = Command("pwd"):stdout(Command.PIPED):output()
 		local cwd = pwd_output.stdout:gsub("\n$", "")
-		local fd_output, _ = Command("fd"):arg({ "--type", "d" }):stdout(Command.PIPED):output()
+		local fd_output, _ = Command("fd"):arg({ "--type", "d", "--no-ignore" }):stdout(Command.PIPED):output()
 		if not fd_output or fd_output.stdout == "" then
 			ya.notify { title = "fd-fzf.yazi", content = "No directories found", level = "warn", timeout = 3 }
 			return
 		end
+
+		local fd_list = fd_output.stdout:gsub("/\n", "\n"):gsub("/$", "")
 
 		local permit = ui.hide()
 		local child, spawn_err = Command("fzf")
@@ -21,7 +23,7 @@ return {
 			return
 		end
 
-		child:write_all(fd_output.stdout)
+		child:write_all(fd_list)
 		child:flush()
 		local output, err = child:wait_with_output()
 		permit:drop()
