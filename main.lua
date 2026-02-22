@@ -1,11 +1,6 @@
-local get_cwd = ya.sync(function(self)
-	return tostring(cx.active.current.cwd)
-end)
-
 return {
-	entry = function(self, job)
-		local cwd = get_cwd(self)
-		local fd_output, _ = Command("fd"):args({ "--type", "d" }):cwd(cwd):stdout(Command.PIPED):output()
+	entry = function()
+		local fd_output, _ = Command("fd"):args({ "--type", "d", "--absolute-path" }):stdout(Command.PIPED):output()
 		if not fd_output or fd_output.stdout == "" then
 			ya.notify { title = "fd-fzf.yazi", content = "No directories found", level = "warn", timeout = 3 }
 			return
@@ -39,7 +34,7 @@ return {
 
 		local selected = output.stdout:gsub("\n$", "")
 		if selected ~= "" then
-			ya.emit("cd", { cwd .. "/" .. selected, raw = true })
+			ya.emit("cd", { selected, raw = true })
 		end
 	end,
 }
