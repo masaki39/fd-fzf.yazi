@@ -30,6 +30,21 @@ run = "plugin fd-fzf"
 desc = "Jump to directory"
 ```
 
+## Customization
+
+The fd command in `main.lua` can be modified directly to pass additional arguments:
+
+```lua
+:arg("fd --type d | fzf")
+```
+
+For example, to search hidden directories or limit depth:
+
+```lua
+:arg("fd --type d --hidden | fzf")
+:arg("fd --type d --max-depth 5 | fzf")
+```
+
 ## License
 
 MIT
