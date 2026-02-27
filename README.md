@@ -24,7 +24,7 @@ ya pkg upgrade masaki39/fd-fzf
 Add a keybinding in `~/.config/yazi/keymap.toml`:
 
 ```toml
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = ["s", "z"]
 run = "plugin fd-fzf"
 desc = "Jump to directory"
