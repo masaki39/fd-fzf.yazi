@@ -1,16 +1,25 @@
 local M = {}
 
+local presets = {
+	default        = "fd --type d | fzf",
+	hidden         = "fd --type d --hidden | fzf",
+	preview        = "fd --type d | fzf --preview 'eza --tree --color=always --icons --level=2 {}'",
+	hidden_preview = "fd --type d --hidden | fzf --preview 'eza --tree --color=always --icons --level=2 {}'",
+}
+
 local state = ya.sync(function()
 	return cx.active.current.cwd
 end)
 
-function M:entry()
+function M:entry(job)
 	local cwd = state()
+	local name = job.args[1] or "default"
+	local cmd = presets[name] or presets["default"]
 
 	local permit = ui.hide()
 	local child, spawn_err = Command("sh")
 		:arg("-c")
-		:arg("fd --type d | fzf")
+		:arg(cmd)
 		:cwd(tostring(cwd))
 		:stdout(Command.PIPED)
 		:stderr(Command.INHERIT)
